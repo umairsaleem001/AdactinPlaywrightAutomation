@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 import process from 'node:process';
 
-process.loadEnvFile();
+if (!process.env.CI) process.loadEnvFile();
 
 const requiredEnv = name => {
   const value = process.env[name];
