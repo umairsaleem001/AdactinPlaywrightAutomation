@@ -1,0 +1,15 @@
+{
+	"mcpServers": 
+		{
+		"my-mcp-server-76915759": 
+		{
+			"type": "stdio",
+			"command": "npx",
+			"args": 
+			[
+				"-y",
+				"@playwright/mcp@latest"
+			]
+		}
+	}
+}

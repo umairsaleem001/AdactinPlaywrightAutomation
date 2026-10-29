@@ -1,0 +1,18 @@
+{
+  "invalidUsers": 
+  [
+    {
+      "username": "invalid-user-test",
+      "password": "invalid-password-test"
+    }
+  ],
+  "expected": 
+  {
+    "welcomeMessage": "Welcome to Adactin Group of Hotels",
+    "emptyUsernameMessage": "Enter Username",
+    "emptyPasswordMessage": "Enter Password",
+    "invalidCredentialsMessage": "Invalid Login details or Your Password might have expired. Click here to reset your password",
+    "searchHotelPagePath": "SearchHotel\\.php",
+    "passwordInputType": "password"
+  }
+}

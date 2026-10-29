@@ -1,0 +1,16 @@
+# Playwright
+node_modules/
+.env
+.env.*
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+
+# Authentication State
+/State/state.json
+
+# Allure Reports
+/allure-results/
+/allure-report/

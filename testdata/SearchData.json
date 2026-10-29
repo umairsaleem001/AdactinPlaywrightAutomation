@@ -1,0 +1,36 @@
+{
+  "SearchHotel": 
+  [
+    {
+      "location": "Sydney",
+      "hotel": "Hotel Creek",
+      "roomType": "Standard",
+      "numberOfRooms": "1",
+      "checkInDate": "26/10/2026",
+      "checkOutDate": "27/10/2026",
+      "adultsPerRoom": "1",
+      "childrenPerRoom": "0",
+      "expected": 
+      {
+        "resultsPagePath": "SelectHotel\\.php",
+        "selectedHotelPagePath": "BookHotel\\.php",
+        "noSelectionPagePath": "SelectHotel\\.php"
+      }
+    },
+    {
+      "location": "Sydney",
+      "hotel": "Hotel Creek",
+      "roomType": "Standard",
+      "numberOfRooms": "1 - One",
+      "checkInDate": "2026-10-26",
+      "checkOutDate": "2026-10-25",
+      "adultsPerRoom": "1 - One",
+      "childrenPerRoom": "0 - None",
+      "expected": 
+      {
+        "checkInMessage": "Check-In Date shall be before than Check-Out Date",
+        "checkOutMessage": "Check-Out Date shall be after than Check-In Date"
+      }
+    }
+  ]
+}
