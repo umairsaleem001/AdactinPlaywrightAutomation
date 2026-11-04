@@ -53,10 +53,9 @@ pipeline {
                                 docker create --name ${containerName} -e BASE_URL=https://adactinhotelapp.com/ -e TEST_USERNAME -e TEST_PASSWORD -e CI=true %IMAGE_NAME%
                             """
 
-                            def testStatus = bat
-                            (
-                                script: "docker start -a ${containerName}",
-                                returnStatus: true
+                            def testStatus = bat(
+                            returnStatus: true,
+                            script: "docker start -a ${containerName}"
                             )
 
                             bat "docker cp ${containerName}:/app/playwright-report ./playwright-report"
