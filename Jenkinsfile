@@ -1,76 +1,65 @@
-
 pipeline {
     agent any
 
-    options 
-    {
+    options {
         disableConcurrentBuilds()
     }
 
-    environment 
-    {
+    environment {
         IMAGE_NAME = 'playwright-tests:jenkins-pipeline'
     }
 
-    stages 
-    {
-        stage('Checkout') 
-        {
+    stages {
+        stage('Checkout') {
             steps {
                 checkout scm
             }
         }
 
-        stage('Docker Build') 
-        {
+        stage('Docker Build') {
             steps {
                 bat 'docker build -t %IMAGE_NAME% .'
             }
         }
 
-        stage('Playwright Tests') 
-        {
-            steps 
-            {
-                withCredentials
-                ([
-                    usernamePassword
-                    (
+        stage('Playwright Tests') {
+            steps {
+                withCredentials([
+                    usernamePassword(
                         credentialsId: 'adactin-login',
                         usernameVariable: 'TEST_USERNAME',
                         passwordVariable: 'TEST_PASSWORD'
                     )
-                ]) 
-
-                {
-                    script 
-                    {
+                ]) {
+                    script {
                         def containerName = "playwright-pipeline-${env.BUILD_NUMBER}"
 
-                        try 
-                        {
-                            bat """
-                                docker create --name ${containerName} -e BASE_URL=https://adactinhotelapp.com/ -e TEST_USERNAME -e TEST_PASSWORD -e CI=true %IMAGE_NAME%
-                            """
+                        try {
+                            bat "docker create --name ${containerName} -e BASE_URL=https://adactinhotelapp.com/ -e TEST_USERNAME -e TEST_PASSWORD -e CI=true %IMAGE_NAME%"
 
                             def testStatus = bat(
-                            returnStatus: true,
-                            script: "docker start -a ${containerName}"
+                                script: "docker start -a ${containerName}",
+                                returnStatus: true
                             )
 
-                            bat "docker cp ${containerName}:/app/playwright-report ./playwright-report"
+                            bat(
+                                script: "docker cp ${containerName}:/app/playwright-report ./playwright-report",
+                                returnStatus: true
+                            )
 
-                            bat "docker cp ${containerName}:/app/allure-results ./allure-results"
+                            bat(
+                                script: "docker cp ${containerName}:/app/allure-results ./allure-results",
+                                returnStatus: true
+                            )
 
-                            if (testStatus != 0) 
-                            {
+                            if (testStatus != 0) {
                                 error('Playwright tests failed')
                             }
-                        } 
-
-                        finally 
-                        {
-                            bat "docker rm -f ${containerName} >nul 2>&1"
+                        } finally {
+                            bat(
+                                script: "docker rm -f ${containerName}",
+                                returnStatus: true
+                            )
                         }
                     }
                 }
@@ -78,26 +67,26 @@ pipeline {
         }
     }
 
-    post 
-    {
-        always 
-        {
-            allure
-            ([
-                includeProperties: false,
-                jdk: '',
-                results: [[path: 'allure-results']]
-            ])
+    post {
+        always {
+            script {
+                if (fileExists('allure-results')) {
+                    allure([
+                        includeProperties: false,
+                        jdk: '',
+                        results: [[path: 'allure-results']]
+                    ])
+                }
 
-            publishHTML(target: 
-            [
-                reportDir: 'playwright-report',
-                reportFiles: 'index.html',
-                reportName: 'Adactin Playwright Report',
-                keepAll: true,
-                alwaysLinkToLastBuild: true,
-                allowMissing: true
-            ])
+                publishHTML(target: [
+                    reportDir: 'playwright-report',
+                    reportFiles: 'index.html',
+                    reportName: 'Adactin Playwright Report',
+                    keepAll: true,
+                    alwaysLinkToLastBuild: true,
+                    allowMissing: true
+                ])
+            }
         }
     }
 }
